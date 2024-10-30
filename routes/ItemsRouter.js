@@ -1,42 +1,14 @@
 import express from 'express';
-import Users from '../models/users.js';
-import {JWT_SECRET, Roles} from '../constants.js';
-import jwt from "jsonwebtoken";
 import Items from "../models/items.js";
+import {Roles} from "../constants.js";
+import authChecker from "../middlewares/authChecker.js";
 
 const router = express.Router();
 
-async function userRoleChecker(req, res) {
-    const token = req.headers.authorization;
-    if (!req.body) {
-        return res.status(400).send({error: 'Validation failed'});
-    }
-
-
-    if (!token) {
-        return res.status(401).send({error: 'No token provided'});
-    }
-
-    // Strip "Bearer" prefix if present
-    const cleanToken = token.startsWith("Bearer ") ? token.slice(7) : token;
-
-    // Verify JWT
-    let verificationResult;
-    try {
-        verificationResult = jwt.verify(cleanToken, JWT_SECRET);
-    } catch (error) {
-        return res.status(401).send({error: 'Invalid token'});
-    }
-
-    const {id} = verificationResult;
-
-    const user = await Users.findOne({_id: id});
-    if (!user) {
-        return res.status(401).send({error: 'User not found'});
-    }
-
-    if (user.role !== Roles.ADMIN) {
-        return res.status(403).send({error: 'Operation not allowed'});
+async function adminChecker(req, res) {
+    const user = await authChecker(req, res);
+    if (user && user.role !== Roles.ADMIN) {
+        return res.status(403).send({ error: 'Operation not allowed' });
     }
 }
 
@@ -53,7 +25,11 @@ router.get('/', async (req, res) => {
 
 router.post('/add', async (req, res) => {
     const {name, description, price} = req.body;
-    await userRoleChecker(req, res)
+    try {
+        await adminChecker(req, res)
+    } catch (err) {
+        res.status(500).send({error: err.message})
+    }
     try {
         const newItem = await Items.create({name, description, price});
         res.status(200).send(newItem);
@@ -63,17 +39,19 @@ router.post('/add', async (req, res) => {
 });
 
 router.patch('/update/:id', async (req, res) => {
-    await userRoleChecker(req, res);
+    try {
+        await adminChecker(req, res);
+    } catch (err) {
+        res.status(500).send({error: err.message})
+    }
     const {name, description, availability, price} = req.body;
 
     try {
-        // Await the item retrieval to check if it exists
         const item = await Items.findById(req.params.id);
         if (!item) {
             return res.status(404).send({error: 'Item not found'});
         }
 
-        // Update the item using req.params.id, no need for itemId in the body
         const updatedItem = await Items.findByIdAndUpdate(
             {_id: req.params.id},
             {name, description, availability, price},
@@ -87,7 +65,11 @@ router.patch('/update/:id', async (req, res) => {
 });
 
 router.delete('/delete/:id', async (req, res) => {
-    await userRoleChecker(req, res);
+    try {
+        await adminChecker(req, res);
+    } catch (err) {
+        res.status(500).send({error: err.message})
+    }
     const itemDeleteId = req.params.id;
     try {
 

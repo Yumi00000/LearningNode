@@ -2,8 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import UsersRouter from './routes/UserRouter.js';
 import ItemsRouter from './routes/ItemsRouter.js';
+import OrdersRouter from './routes/OrdersRouter.js';
 import {logger} from './middlewares/logger.js';
-
 const PORT = 3000;
 const DATABASE_URL = 'mongodb://localhost:27017/node-api';
 
@@ -19,6 +19,7 @@ server.get('/', (req, res) => {
 server.use(express.json());
 server.use('/users', UsersRouter);
 server.use('/items', ItemsRouter);
+server.use('/orders', OrdersRouter);
 server.listen(PORT, async () => {
     console.log(`Server listens on port ${PORT}`);
     try {
