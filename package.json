@@ -1,0 +1,29 @@
+{
+  "name": "learningnode",
+  "version": "1.0.0",
+  "description": "learning node",
+  "main": "package.json",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yumi00000/LearningNode.git"
+  },
+  "author": "Yumi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Yumi00000/LearningNode/issues"
+  },
+  "homepage": "https://github.com/Yumi00000/LearningNode#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "black": "^0.3.0",
+    "body-parser": "^1.20.3",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.7.3",
+    "nodemon": "^3.1.7"
+  }
+}
