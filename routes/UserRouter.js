@@ -133,7 +133,7 @@ router.patch('/:id', async (req, res) => {
 
         res.status(200).send({ user: updatedUser });
     } catch (err) {
-        res.status(500).send({ error: err.message });
+            res.status(500).send({ error: err.message });
     }
 });
 
@@ -156,7 +156,7 @@ router.get('/all', async (req, res) => {
             return res.status(403).send("Operation not allowed");
         }
 
-        const users = await Users.find({});
+        const users = await Users.find();
         res.status(200).send({ users });
     } catch (err) {
         res.status(500).send({ error: err.message });
@@ -189,10 +189,6 @@ router.delete('/:id', async (req, res) => {
     } catch (err) {
         res.status(500).send({ error: err.message });
     }
-});
-
-router.get('/singleEndpointMiddleware', (req, res) => {
-    res.status(200).send("Response");
 });
 
 export default router;
