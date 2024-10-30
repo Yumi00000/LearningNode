@@ -25,8 +25,8 @@ router.post('/signup', async (req, res) => {
     if (!email || !password) {
         return res.status(400).send({ error: 'Validation failed' });
     }
-    const psswdRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
-    if (password.length < 8 || !psswdRegex.test(password)) {
+    const psswdRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/;
+    if (!psswdRegex.test(password)) {
         return res.status(400).send({
             error: "Password must be 8-16 characters long, contain at least one number and one special character (!@#$%^&*), and consist of letters, numbers, and special characters only."
         });
