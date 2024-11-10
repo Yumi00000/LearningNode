@@ -17,6 +17,11 @@ const orderSchema = new mongoose.Schema({
         enum: Object.values(orderStatus),
         default: orderStatus.NONE
     },
+    postalAddress: {
+        type: String,
+        required: true,
+        unique: false,
+    },
     totalPrice: {
         type: Number,
         required: true,
