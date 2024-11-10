@@ -15,11 +15,12 @@ const orderSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: Object.values(orderStatus),
-        default: orderStatus.PENDING
+        default: orderStatus.NONE
     },
     totalPrice: {
         type: Number,
-        required: true
+        required: true,
+        default: 0
     },
     createdAt: {
         type: Date,

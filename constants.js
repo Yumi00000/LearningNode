@@ -15,6 +15,7 @@ export const ItemAvailability = {
 }
 
 export const orderStatus = {
+    NONE: 'none',
     PENDING: "Pending",
     CONFIRMED: "Confirmed",
     PROCESSING: "Processing",
