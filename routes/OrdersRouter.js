@@ -213,7 +213,7 @@ router.patch("/confirm-order-user", async (req, res) => {
 router.patch("/change-status-admin", async (req, res) => {
     const user = await authChecker(req, res);
     if (user && user.role !== Roles.ADMIN) {
-        return res.status(403).send({ error: 'Operation not allowed' });
+        return res.status(403).send({error: 'Operation not allowed'});
     }
 
     const {orderId, status} = req.body;
@@ -236,6 +236,23 @@ router.patch("/change-status-admin", async (req, res) => {
         res.status(500).send({error: err.message});
     }
 
+})
+
+router.delete("/delete-order", async (req, res) => {
+    const user = await authChecker(req, res);
+
+    if (!user) {
+        return res.status(401).send({error: 'You are not logged in!'});
+    }
+
+    const {orderId} = req.body;
+
+    try {
+        await Orders.findByIdAndDelete(orderId);
+        res.status(200).send("Order deleted successfully");
+    } catch (err) {
+        res.status(500).send({error: err.message})
+    }
 })
 
 export default router;
