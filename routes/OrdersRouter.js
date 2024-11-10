@@ -8,6 +8,10 @@ const router = express.Router();
 
 
 router.get('/', async (req, res) => {
+    const user = await authChecker(req, res);
+    if (!user) {
+        return res.status(403).send({error: 'User not logged in'});
+    }
     try {
         const allOrders = await Orders.find();
         res.send(allOrders);
@@ -255,7 +259,7 @@ router.delete("/delete-order", async (req, res) => {
     }
 })
 
-router.post("/find-orderById", async (req, res) => {
+router.get("/find-orderById", async (req, res) => {
     const user = await authChecker(req, res);
     if (!user) {
         return res.status(404).send({error: 'You are not logged in!'});
@@ -276,6 +280,22 @@ router.post("/find-orderById", async (req, res) => {
         res.status(500).send({error: err.message});
     }
 })
+
+
+router.get("/all-user-orders", async (req, res) => {
+
+    const user = await authChecker(req, res);
+    if (!user) {
+        return res.status(404).send({error: 'You are not logged in!'});
+    }
+    try {
+        const orders = await Orders.find({userId: user.id});
+        res.status(200).send(orders);
+    } catch (err) {
+        res.status(500).send({error: err.message});
+    }
+})
+
 
 export default router;
 
